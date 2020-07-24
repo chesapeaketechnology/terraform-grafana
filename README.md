@@ -1,2 +1,4 @@
 # terraform-grafana
-Terraform scripts for a grafana server
+Terraform scripts for creating a grafana server
+
+
