@@ -57,7 +57,7 @@ resource "azurerm_container_group" "grafana" {
   resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
   location            = data.azurerm_resource_group.grafana_resource_group.location
   ip_address_type     = "public"
-  dns_name_label      = "gf-label"
+  dns_name_label      = "grafana"
   os_type             = "Linux"
 
   tags = var.default_tags
