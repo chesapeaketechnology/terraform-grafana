@@ -39,7 +39,7 @@ resource "azurerm_subnet" "grafana_subnet" {
   name                 = "grafana_subnet"
   resource_group_name  = data.azurerm_resource_group.grafana_resource_group.name
   virtual_network_name = data.azurerm_virtual_network.grafana_net.name
-  address_prefix     = "10.0.11.0/24"
+  address_prefixes     = var.subnet_cidrs
 
   delegation {
     name = "grafana_subnet_delegation"
