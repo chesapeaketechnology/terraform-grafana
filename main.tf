@@ -4,7 +4,7 @@ terraform {
 }
 
 provider "azurerm" {
-  version = "~> 2.0"
+  version = "~> 2.18.0"
   features {}
   disable_terraform_partner_id = true
 }
