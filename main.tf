@@ -51,6 +51,20 @@ resource "azurerm_network_profile" "grafana_net_profile" {
   }
 }
 
+resource "azurerm_network_interface" "grafana_nic" {
+  name                = join("", ["nic-", var.system_name, "-", var.environment, "grafana"])
+  location            = data.azurerm_resource_group.grafana_resource_group.location
+  resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
+
+  tags = var.default_tags
+
+  ip_configuration {
+    name                          = "grafana_nicConfiguration"
+    subnet_id                     = azurerm_subnet.grafana_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
 # Create a Container Group
 resource "azurerm_container_group" "grafana" {
   name                = join("-", [var.system_name, var.environment, "grafana"])
