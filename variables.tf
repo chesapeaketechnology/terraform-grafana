@@ -8,9 +8,9 @@ variable "virtual_network_name" {
   description = "Name of Azure virtual network"
 }
 
-variable "subnet_cidrs" {
-  type        = list(string)
-  description = "The subnet CIDRs the Grafana server should live within."
+variable "network_profile_id" {
+  type        = string
+  description = "Name of the network profile in which to create the container"
 }
 
 variable "location" {
