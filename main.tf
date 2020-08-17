@@ -20,51 +20,51 @@ data "azurerm_virtual_network" "grafana_net" {
 }
 
 
-//resource "azurerm_network_interface" "grafana_nic" {
-//  name                = join("", ["nic-", var.system_name, "-", var.environment, "grafana"])
-//  location            = data.azurerm_resource_group.grafana_resource_group.location
-//  resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
-//
-//  tags = var.default_tags
-//
-//  ip_configuration {
-//    name                          = "grafana_nicConfiguration"
-//    subnet_id                     = azurerm_subnet.grafana_subnet.id
-//    private_ip_address_allocation = "Dynamic"
-//  }
-//}
+resource "azurerm_network_interface" "grafana_nic" {
+  name                = join("", ["nic-", var.system_name, "-", var.environment, "grafana"])
+  location            = data.azurerm_resource_group.grafana_resource_group.location
+  resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
 
-//# Create subnet for use with containers
-//resource "azurerm_subnet" "grafana_subnet" {
-//  name                 = "grafana_subnet"
-//  resource_group_name  = data.azurerm_resource_group.grafana_resource_group.name
-//  virtual_network_name = data.azurerm_virtual_network.grafana_net.name
-//  address_prefixes     = var.subnet_cidrs
-//
-//  delegation {
-//    name = "grafana_subnet_delegation"
-//
-//    service_delegation {
-//      name = "Microsoft.ContainerInstance/containerGroups"
-//      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-//    }
-//  }
-//}
+  tags = var.default_tags
 
-//resource "azurerm_network_profile" "grafana_net_profile" {
-//  name                = join("-", [var.system_name, var.environment, "gf-net-profile"])
-//  location            = data.azurerm_resource_group.grafana_resource_group.location
-//  resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
-//
-//  container_network_interface {
-//    name = "container_nic"
-//
-//    ip_configuration {
-//      name = "container_ip_config"
-//      subnet_id = azurerm_subnet.grafana_subnet.id
-//    }
-//  }
-//}
+  ip_configuration {
+    name                          = "grafana_nicConfiguration"
+    subnet_id                     = azurerm_subnet.grafana_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+# Create subnet for use with containers
+resource "azurerm_subnet" "grafana_subnet" {
+  name                 = "grafana_subnet"
+  resource_group_name  = data.azurerm_resource_group.grafana_resource_group.name
+  virtual_network_name = data.azurerm_virtual_network.grafana_net.name
+  address_prefixes     = var.subnet_cidrs
+
+  delegation {
+    name = "grafana_subnet_delegation"
+
+    service_delegation {
+      name = "Microsoft.ContainerInstance/containerGroups"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
+
+resource "azurerm_network_profile" "grafana_net_profile" {
+  name                = join("-", [var.system_name, var.environment, "gf-net-profile"])
+  location            = data.azurerm_resource_group.grafana_resource_group.location
+  resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
+
+  container_network_interface {
+    name = "container_nic"
+
+    ip_configuration {
+      name = "container_ip_config"
+      subnet_id = azurerm_subnet.grafana_subnet.id
+    }
+  }
+}
 
 
 # Create a Container Group
@@ -72,8 +72,8 @@ resource "azurerm_container_group" "grafana" {
   name                = join("-", [var.system_name, var.environment, "grafana"])
   resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
   location            = data.azurerm_resource_group.grafana_resource_group.location
-  ip_address_type     = "public"
-  dns_name_label      = "grafana"
+  ip_address_type     = "private"
+  network_profile_id  = azurerm_network_profile.grafana_net_profile.id
   os_type             = "Linux"
 
   tags = var.default_tags
