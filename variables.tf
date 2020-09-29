@@ -3,11 +3,6 @@ variable "resource_group_name" {
   description = "Azure resource group in which to deploy"
 }
 
-variable "virtual_network_name" {
-  type        = string
-  description = "Name of Azure virtual network"
-}
-
 variable "network_profile_id" {
   type        = string
   description = "Name of the network profile in which to create the container"

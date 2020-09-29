@@ -13,7 +13,6 @@ module "grafana-server" {
   source               = "github.com/chesapeaketechnology/terraform-grafana"
   resource_group_name  = var.resource_group_name
   system_name          = var.cluster_name
-  virtual_network_name = var.virtual_network_name
   location             = var.location
   environment          = var.environment
   default_tags         = var.default_tags
