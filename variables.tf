@@ -106,3 +106,44 @@ variable "default_tags" {
   type        = map(string)
   description = "Collection of default tags to apply to all resources"
 }
+
+
+variable "datasci_db_type" {
+  type        = string
+  description = "The database type being used for data science data. Must be 'postgres' or 'mysql'."
+  validation {
+    condition     = var.datasci_db_type == "postgres" || var.datasci_db_type == "mysql"
+    error_message = "Sorry, but only 'postgres' and 'mysql' are supported."
+  }
+}
+
+variable "datasci_db_name" {
+  type        = string
+  description = "The database name."
+  default     = "grafana"
+}
+
+variable "datasci_db_ssl_mode" {
+  type        = string
+  description = "The ssl mode for connections to the database. Valid values are 'disable', 'require', & 'verify-full' for Postgres and 'true', 'false', & 'skip-verify' for MySql."
+
+  validation {
+    condition     = var.datasci_db_ssl_mode == "disable" || var.datasci_db_ssl_mode == "require" || var.datasci_db_ssl_mode == "verify-full" || var.datasci_db_ssl_mode == "true" || var.datasci_db_ssl_mode == "false" || var.datasci_db_ssl_mode == "skip-verify"
+    error_message = "Sorry, but valid values are 'disable', 'require', & 'verify-full' for Postgres and 'true', 'false', & 'skip-verify' for MySql."
+  }
+}
+
+variable "datasci_db_host" {
+  type        = string
+  description = "The hostname for the postgresql data source where data science data is accessed"
+}
+
+variable "datasci_db_username" {
+  type        = string
+  description = "The user name for logging into the data science data source"
+}
+
+variable "datasci_db_password" {
+  type        = string
+  description = "The credentials for logging into the data science data source"
+}

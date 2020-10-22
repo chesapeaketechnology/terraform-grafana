@@ -27,15 +27,16 @@ resource "azurerm_container_group" "grafana" {
   ip_address_type     = "private"
   network_profile_id  = var.network_profile_id
   os_type             = "Linux"
+  restart_policy      = "OnFailure"
 
   tags = var.default_tags
 
   # Grafana Server
   container {
     name   = "grafana-server"
-    image  = "chesapeaketechnology/grafana:v0.8"
-    cpu    = "1.0"
-    memory = "2.0"
+    image  = "chesapeaketechnology/grafana:v0.9"
+    cpu    = "4.0"
+    memory = "8.0"
 
     ports {
       port     = 3000
@@ -54,6 +55,11 @@ resource "azurerm_container_group" "grafana" {
       GF_SERVER_HTTP_PORT=var.grafana_port
       GF_SECURITY_ADMIN_USER=var.grafana_admin_user
       GF_SECURITY_ADMIN_PASSWORD=var.grafana_admin_password
+      DS_DATABASE_TYPE=var.datasci_db_type
+      DS_DATABASE_HOST=var.datasci_db_host
+      DS_DATABASE_NAME=var.datasci_db_name
+      DS_DATABASE_USER=var.datasci_db_username
+      DS_DATABASE_PASSWORD=var.datasci_db_password
     }
   }
 }
