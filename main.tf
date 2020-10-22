@@ -7,16 +7,11 @@ provider "azurerm" {
   version = "~> 2.18.0"
   features {}
   disable_terraform_partner_id = true
+  skip_provider_registration = true
 }
 
 data "azurerm_resource_group" "grafana_resource_group" {
   name = var.resource_group_name
-}
-
-
-data "azurerm_virtual_network" "grafana_net" {
-  name                = var.virtual_network_name
-  resource_group_name = data.azurerm_resource_group.grafana_resource_group.name
 }
 
 # Create a Container Group
