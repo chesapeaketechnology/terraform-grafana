@@ -55,6 +55,7 @@ resource "azurerm_container_group" "grafana" {
       DS_DATABASE_NAME=var.datasci_db_name
       DS_DATABASE_USER=var.datasci_db_username
       DS_DATABASE_PASSWORD=var.datasci_db_password
+      DS_PROMETHEUS_HOST=var.prometheus_server
     }
   }
 }
