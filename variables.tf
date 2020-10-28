@@ -142,3 +142,8 @@ variable "datasci_db_password" {
   type        = string
   description = "The credentials for logging into the data science data source"
 }
+
+variable "prometheus_server" {
+  type        = string
+  description = "The host/IP address of Prometheus server"
+}
