@@ -29,9 +29,9 @@ resource "azurerm_container_group" "grafana" {
   # Grafana Server
   container {
     name   = "grafana-server"
-    image  = "chesapeaketechnology/grafana:v0.9.1"
-    cpu    = "4.0"
-    memory = "8.0"
+    image  = "chesapeaketechnology/grafana:v0.10"
+    cpu    = "3.75"
+    memory = "7.5"
 
     ports {
       port     = 3000
@@ -56,6 +56,39 @@ resource "azurerm_container_group" "grafana" {
       DS_DATABASE_USER=var.datasci_db_username
       DS_DATABASE_PASSWORD=var.datasci_db_password
       DS_PROMETHEUS_HOST=var.prometheus_server
+    }
+  }
+
+  # Consul gateway
+  container {
+    name   = "grafanaconsulgateway"
+    image  = "consul"
+    cpu    = "0.25"
+    memory = "0.5"
+
+    volume {
+      name       = "consul-config"
+      mount_path = "/consul/config"
+      read_only  = "false"
+      share_name = var.consul_share_name
+      
+      storage_account_name = var.consul_account_name
+      storage_account_key  = var.consul_account_key
+    }
+
+    ports {
+      port     = 8500
+      protocol = "TCP"
+    }
+
+    ports {
+      port     = 8600
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      "CONSUL_LOCAL_CONFIG"="{\"disable_update_check\": true}"
+      "CONSUL_BIND_INTERFACE"="eth0"
     }
   }
 }
