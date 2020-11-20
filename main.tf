@@ -14,6 +14,43 @@ data "azurerm_resource_group" "grafana_resource_group" {
   name = var.resource_group_name
 }
 
+# Create an Azure File Share for Grafana's Consul config file
+resource "azurerm_storage_share" "grafana_consul_config" {
+  name                 = "grafana-consul-config-file-share"
+  storage_account_name = var.consul_account_name
+  quota                = 1
+}
+
+resource "local_file" "consul-config" {
+  content = <<-EOT
+  {
+    "node_name": "grafana-consul-gateway",
+    "addresses": {
+        "http": "${azurerm_container_group.grafana.ip_address} 127.0.0.1"
+    },
+    "server": false,
+    "advertise_addr": "${azurerm_container_group.grafana.ip_address}",
+    "client_addr": "127.0.0.1 ${azurerm_container_group.grafana.ip_address}",
+    "connect": {
+        "enabled": true
+    },
+    "data_dir": "/var/data",
+    "retry_join": ["${var.consul_server}"]
+  }
+  EOT
+  filename = "${path.module}/config.json"
+}
+
+resource "null_resource" "consul-config-provisioner" {
+  triggers = {
+    command   = "az storage file upload --share-name ${azurerm_storage_share.grafana_consul_config.name} --account-name ${var.consul_account_name} --account-key ${var.consul_account_key} --source ${local_file.consul-config.filename}"
+  }
+
+  provisioner "local-exec" {
+    command = "az storage file upload --share-name ${azurerm_storage_share.grafana_consul_config.name} --account-name ${var.consul_account_name} --account-key ${var.consul_account_key} --source ${local_file.consul-config.filename}"
+  }
+}
+
 # Create a Container Group
 resource "azurerm_container_group" "grafana" {
   name                = join("-", [var.system_name, var.environment, "grafana"])
@@ -70,7 +107,7 @@ resource "azurerm_container_group" "grafana" {
       name       = "consul-config"
       mount_path = "/consul/config"
       read_only  = "false"
-      share_name = var.consul_share_name
+      share_name = azurerm_storage_share.grafana_consul_config.name
       
       storage_account_name = var.consul_account_name
       storage_account_key  = var.consul_account_key
