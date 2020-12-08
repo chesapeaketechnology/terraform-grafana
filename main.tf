@@ -66,7 +66,7 @@ resource "azurerm_container_group" "grafana" {
   # Grafana Server
   container {
     name   = "grafana-server"
-    image  = "chesapeaketechnology/grafana:v0.10"
+    image  = "chesapeaketechnology/grafana:v1.0"
     cpu    = "3.75"
     memory = "7.5"
 

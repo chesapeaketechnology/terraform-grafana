@@ -30,8 +30,11 @@ module "grafana-server" {
 
 ## Changelog
 
+##### [1.0](https://github.com/chesapeaketechnology/terraform-grafana/releases/tag/v1.0) - 2020-12-08
+* Updated the grafana docker version to v1.0.
+
 ##### [0.1.0]() - 2020-07-24
-* First cut of grafana terraform module
+* First cut of grafana terraform module.
 
 ## Contact
 * **Les Stroud** - [lstroud](https://github.com/lstroud)  
